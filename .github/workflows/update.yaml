@@ -7,8 +7,12 @@ on:
         required: true
         default: 'main'
       stage:
-        description: 'Stage (in, ac, pd)'
+        description: 'Stage'
         required: true
+        options:
+          - in
+          - ac
+          - pd
         default: 'in'
 
 jobs:
