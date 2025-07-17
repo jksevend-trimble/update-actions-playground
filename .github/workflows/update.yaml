@@ -71,4 +71,4 @@ jobs:
             --head update/${{ inputs.stage }}/${{ env.version }} \
             --base main \
             --title "[${{ inputs.stage }}]: update v${{ env.version }}" \
-            --body "Update ${{github.repository_id}} [${{ inputs.stage }}] to v${{ env.version }}"
+            --body "Update ${{github.repository}} [${{ inputs.stage }}] to v${{ env.version }}"
