@@ -7,9 +7,9 @@ on:
         required: true
         default: 'main'
       stage:
-        description: 'Stage (INT, ACC, PD)'
+        description: 'Stage (in, ac, pd)'
         required: true
-        default: 'INT'
+        default: 'in'
 
 jobs:
   update-values:
