@@ -7,10 +7,10 @@ on:
         description: 'Stage'
         required: true
         options:
-          - in
-          - ac
-          - pd
-        default: 'in'
+          - integration
+          - acceptance
+          - productive
+        default: 'integration'
 
 jobs:
   update-values:
@@ -47,9 +47,10 @@ jobs:
 
       - name: Update values.yaml
         run: |
-          stage=${{ inputs.stage }}
+          declare -A stage_map=( ["integration"]="in" ["acceptance"]="ac" ["productive"]="pd" )
+          short_stage_name=${stage_map[${{ inputs.stage }}]}
           version=${{ env.version }}
-          sed -i "s/tag: .*/tag: $version/" example-hc/envs/$stage/values.yaml
+          sed -i "s/tag: .*/tag: $version/" example-hc/envs/$short_stage_name/values.yaml
 
       - name: Commit changes
         run: |
@@ -57,7 +58,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git checkout -b update/${{ inputs.stage }}/${{ env.version }}
-          git add envs/${{ inputs.stage }}/values.yaml
+          git add envs/$short_stage_name/values.yaml
           git commit -m "chore: Update version to ${{ env.version}} for '${{ inputs.stage }}' from '${{ github.ref }}' "
           git push https://jksevend-trimble:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/jksevend-trimble/example-hc.git update/${{ inputs.stage }}/${{ env.version }}
 
@@ -68,4 +69,5 @@ jobs:
           gh pr create --repo jksevend-trimble/example-hc \
             --head update/${{ inputs.stage }}/${{ env.version }} \
             --base main \
-            --title "[${{ inputs.stage }}]: update v${{ env.version }}"
+            --title "[${{ inputs.stage }}]: update v${{ env.version }}" \
+            --body "Update ${{github.repository_id}} [${{ inputs.stage }}] to v${{ env.version }}"
