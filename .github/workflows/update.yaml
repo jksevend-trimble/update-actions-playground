@@ -20,13 +20,9 @@ jobs:
       contents: write
 
     steps:
-      - name: Echo github ref
-        run: |
-          echo ${{ github.ref }}
-
       - name: Check stupid
         run: |
-          if [[ ! "${GITHUB_REF##*/}" =~ ^release/ ]]; then
+          if [[ ! "${GITHUB_REF##*/}" =~ ^refs/heads/release/ ]]; then
             echo "Error: The branch name must follow the release/** pattern."
             exit 1
           fi  
