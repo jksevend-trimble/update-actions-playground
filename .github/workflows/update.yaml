@@ -49,9 +49,11 @@ jobs:
       - name: Commit changes
         run: |
           cd example-hc
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git checkout -b update-values-${{ inputs.stage }}
           git add envs/${{ inputs.stage }}/values.yaml
-          git commit -m "chore: Update version to ${{ env.version}} for ${{ env.version }}"
+          git commit -m "chore: Update version to ${{ env.version}} for ${{ inputs.stage }}"
           git push https://jksevend-trimble:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/jksevend-trimble/example-hc.git update-values-${{ inputs.stage }}
 
       - name: Create Pull Request
