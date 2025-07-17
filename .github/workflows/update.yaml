@@ -20,6 +20,10 @@ jobs:
       contents: write
 
     steps:
+      - name: Echo github ref
+        run: |
+          echo ${{ github.ref }}
+
       - name: Check branch pattern
         run: |
           if [[ ! "${GITHUB_REF##*/}" =~ ^release/ ]]; then
