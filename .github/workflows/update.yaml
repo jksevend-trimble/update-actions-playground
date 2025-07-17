@@ -2,10 +2,6 @@ name: Update app
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to checkout'
-        required: true
-        default: 'release/'
       stage:
         type: choice
         description: 'Stage'
@@ -24,10 +20,17 @@ jobs:
       contents: write
 
     steps:
+      - name: Check branch pattern
+        run: |
+          if [[ ! "${GITHUB_REF##*/}" =~ ^release/ ]]; then
+            echo "Error: The branch name must follow the release/** pattern."
+            exit 1
+          fi  
+
       - name: Checkout main-repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ github.ref }}
 
       - name: Extract version from pom.xml
         id: extract_version
@@ -67,4 +70,3 @@ jobs:
             --base main \
             --title "chore: Update version to ${{ env.version}} for ${{ inputs.stage }}" \
             --body "This PR updates the values.yaml file with the new version extracted from pom.xml."
-        
