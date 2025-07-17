@@ -56,17 +56,16 @@ jobs:
           cd example-hc
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git checkout -b update-values-${{ inputs.stage }}
+          git checkout -b update/${{ inputs.stage }}/${{ env.version }}
           git add envs/${{ inputs.stage }}/values.yaml
-          git commit -m "chore: Update version to ${{ env.version}} for '${{ inputs.stage }}' from '${{ inputs.branch }}' "
-          git push https://jksevend-trimble:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/jksevend-trimble/example-hc.git update-values-${{ inputs.stage }}
+          git commit -m "chore: Update version to ${{ env.version}} for '${{ inputs.stage }}' from '${{ github.ref }}' "
+          git push https://jksevend-trimble:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/jksevend-trimble/example-hc.git update/${{ inputs.stage }}/${{ env.version }}
 
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           gh pr create --repo jksevend-trimble/example-hc \
-            --head update-values-${{ inputs.stage }} \
+            --head update/${{ inputs.stage }}/${{ env.version }} \
             --base main \
-            --title "chore: Update version to ${{ env.version}} for ${{ inputs.stage }}" \
-            --body "This PR updates the values.yaml file with the new version extracted from pom.xml."
+            --title "[${{ inputs.stage }}]: update v${{ env.version }}"
