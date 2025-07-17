@@ -17,47 +17,47 @@ jobs:
     permissions:
       pull-requests: write
 
-  steps:
-    - name: Checkout main-repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ inputs.branch }}
+    steps:
+      - name: Checkout main-repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
 
-    - name: Extract version from pom.xml
-      id: extract_version
-      run: |
-        version=$(xmllint --xpath "string(//project/version)" pom.xml)
-        echo "version=$version" >> $GITHUB_ENV
+      - name: Extract version from pom.xml
+        id: extract_version
+        run: |
+          version=$(xmllint --xpath "string(//project/version)" pom.xml)
+          echo "version=$version" >> $GITHUB_ENV
 
-    - name: Checkout hc-repository
-      uses: actions/checkout@v4
-      with:
-        repository: 'jksevend-trimble/example-hc'
-        path: 'example-hc'
+      - name: Checkout hc-repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'jksevend-trimble/example-hc'
+          path: 'example-hc'
 
-    - name: Update values.yaml
-      run: |
-        stage=${{ inputs.stage }}
-        version=${{ env.version }}
-        sed -i "s/tag: .*/tag: $version/" example-hc/envs/$stage/values.yaml
+      - name: Update values.yaml
+        run: |
+          stage=${{ inputs.stage }}
+          version=${{ env.version }}
+          sed -i "s/tag: .*/tag: $version/" example-hc/envs/$stage/values.yaml
 
-    - name: Commit changes
-      run: |
-        cd example-hc
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        git checkout -b update-values-${{ inputs.stage }}
-        git add envs/${{ inputs.stage }}/values.yaml
-        git commit -m "chore: Update version to ${{ env.version}} for ${{ env.version }}"
-        git push origin update-values-${{ inputs.stage }}
+      - name: Commit changes
+        run: |
+          cd example-hc
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git checkout -b update-values-${{ inputs.stage }}
+          git add envs/${{ inputs.stage }}/values.yaml
+          git commit -m "chore: Update version to ${{ env.version}} for ${{ env.version }}"
+          git push origin update-values-${{ inputs.stage }}
 
-    - name: Create Pull Request
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh pr create --repo jksevend-trimble/example-hc \
-          --head update-values-${{ inputs.stage }} \
-          --base main \
-          --title "chore: Update version to ${{ env.version}} for ${{ inputs.stage }}" \
-          --body "This PR updates the values.yaml file with the new version extracted from pom.xml."
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --repo jksevend-trimble/example-hc \
+            --head update-values-${{ inputs.stage }} \
+            --base main \
+            --title "chore: Update version to ${{ env.version}} for ${{ inputs.stage }}" \
+            --body "This PR updates the values.yaml file with the new version extracted from pom.xml."
         
