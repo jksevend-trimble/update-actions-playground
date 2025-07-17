@@ -31,7 +31,7 @@ jobs:
       - name: Extract version from pom.xml
         id: extract_version
         run: |
-          version=$(xmllint --xpath "string(//project/version)" pom.xml)
+          version=$(awk '/<artifactId>playground<\/artifactId>/,/<\/project>/' pom.xml | grep -oPm1 "(?<=<version>)[^<]+")
           echo "version=$version" >> $GITHUB_ENV
 
       - name: Checkout hc-repository
