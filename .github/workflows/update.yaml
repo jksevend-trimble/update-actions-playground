@@ -24,7 +24,7 @@ jobs:
         run: |
           echo ${{ github.ref }}
 
-      - name: Check branch pattern
+      - name: Check stupid
         run: |
           if [[ ! "${GITHUB_REF##*/}" =~ ^release/ ]]; then
             echo "Error: The branch name must follow the release/** pattern."
