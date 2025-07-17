@@ -20,12 +20,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Check stupid
+      - name: Check stuped
         run: |
-          if [[ ! "${GITHUB_REF##*/}" =~ ^refs/heads/release/ ]]; then
+          if [[ ! "${GITHUB_REF}" =~ ^refs/heads/release/ ]]; then
             echo "Error: The branch name must follow the release/** pattern."
             exit 1
-          fi  
+          fi
 
       - name: Checkout main-repository
         uses: actions/checkout@v4
