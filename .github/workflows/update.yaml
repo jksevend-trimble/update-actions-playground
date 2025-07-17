@@ -60,7 +60,7 @@ jobs:
 
       - name: Create Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           gh pr create --repo jksevend-trimble/example-hc \
             --head update-values-${{ inputs.stage }} \
