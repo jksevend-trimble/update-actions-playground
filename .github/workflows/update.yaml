@@ -7,6 +7,7 @@ on:
         required: true
         default: 'main'
       stage:
+        type: choice
         description: 'Stage'
         required: true
         options:
